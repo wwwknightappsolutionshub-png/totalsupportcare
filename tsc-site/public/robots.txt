@@ -1,0 +1,9 @@
+# Kerry Cares — public site crawl rules
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+
+# Prefer search indexing; training crawlers may be tuned later if needed
+Sitemap: https://kerrycares.co.uk/sitemap.xml
+Sitemap: https://kerrycares.co.uk/api/public/sitemap.xml

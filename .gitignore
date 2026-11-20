@@ -1,0 +1,36 @@
+# Dependencies & builds
+**/node_modules/
+**/dist/
+**/dist-ssr/
+
+# Local env / secrets — never commit real credentials
+**/.env
+**/.env.*
+!**/.env.example
+!**/.env.development
+**/secrets/*
+!**/secrets/.gitkeep
+!**/secrets/.env.example
+
+# Runtime data (SQLite, uploads, private CVs)
+**/data/*.db
+**/data/*.db-*
+**/uploads/**
+!**/uploads/.gitkeep
+**/private/**
+!**/private/.gitkeep
+!**/private/cvs/
+!**/private/cvs/.gitkeep
+
+# OS / editor / logs
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa
+id_rsa.pub

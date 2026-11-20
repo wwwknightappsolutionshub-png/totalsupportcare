@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 120" fill="none">
+  <g transform="translate(8,12)">
+    <circle cx="48" cy="48" r="34" stroke="#0B1F2E" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="170 44" stroke-dashoffset="12"/>
+    <circle cx="48" cy="48" r="24" stroke="#0B1F2E" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="118 33" stroke-dashoffset="55"/>
+    <circle cx="48" cy="48" r="14" stroke="#0B1F2E" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="68 20" stroke-dashoffset="28"/>
+    <circle cx="48" cy="48" r="4.2" fill="#E3A93B"/>
+  </g>
+  <text x="118" y="52" font-family="Manrope, Inter, system-ui, sans-serif" font-size="28" font-weight="700" fill="#0B1F2E" letter-spacing="-0.02em">Total Support Care</text>
+  <text x="118" y="82" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="400" fill="#5A6A78">Care as individual as you.</text>
+</svg>

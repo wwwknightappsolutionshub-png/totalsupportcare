@@ -1,0 +1,27 @@
+node_modules/
+data/*.db
+data/*.db-*
+uploads/*
+!uploads/.gitkeep
+
+# Private CV store — keep folder structure only
+private/**
+!private/
+!private/**/
+!private/**/.gitkeep
+
+# Secrets — never commit. Prefer secrets/.env (not web-reachable).
+.env
+.env.*
+!.env.example
+secrets/*
+!secrets/.gitkeep
+!secrets/.env.example
+
+*.log
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa
+id_rsa.pub
