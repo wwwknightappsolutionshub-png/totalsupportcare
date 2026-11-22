@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
-import { NEWS } from "../data/site";
 import { pageHeroFallback } from "../data/packFallbacks";
 import { useCmsPage, useSite } from "../context/SiteContext";
+import { cmsList } from "../lib/cmsFields";
 import Seo from "../seo/Seo";
 import { pageSeoForPack } from "../seo/pageMeta";
 import {
@@ -16,8 +16,8 @@ export default function News() {
   const { settings, isTotalSupport, pack } = useSite();
   const { section } = useCmsPage("/news");
   const masthead = section("news_masthead")?.fields;
-  const list = section("news_list")?.fields;
-  const entries = list?.entries?.length ? list.entries : NEWS;
+  const listSec = section("news_list");
+  const entries = cmsList(listSec, "entries");
   const [featured, ...rest] = entries;
   const brand = masthead?.brand || settings.brandName || "Total Support Care";
   const heroFb = pageHeroFallback(pack?.slug, "news");

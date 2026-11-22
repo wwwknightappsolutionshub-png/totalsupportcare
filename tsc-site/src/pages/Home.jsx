@@ -12,14 +12,12 @@ import {
   DIFFERENCE_COPY,
   DIFFERENCE_IMG,
   HERO_IMG,
-  KERRY_PHOTO,
-  NICOLE_PHOTO,
-  REVIEWS,
   SERVICES_INTRO,
   SUPPORT_ITEMS,
   SUPPORT_SCENE,
 } from "../data/site";
 import { useCmsPage, useSite } from "../context/SiteContext";
+import { cmsList } from "../lib/cmsFields";
 import Seo from "../seo/Seo";
 import { pageSeoForPack } from "../seo/pageMeta";
 import {
@@ -33,16 +31,21 @@ export default function Home() {
   const reduceMotion = useReducedMotion();
   const { settings, isTotalSupport, pack } = useSite();
   const { section } = useCmsPage("/");
-  const hero = section("home_hero")?.fields;
+  const heroSec = section("home_hero");
+  const hero = heroSec?.fields;
   const servicesIntro = section("rich_text")?.fields;
-  const servicesBoard = section("services_board")?.fields;
-  const support = section("support_list")?.fields;
+  const servicesBoardSec = section("services_board");
+  const servicesBoard = servicesBoardSec?.fields;
+  const supportSec = section("support_list");
+  const support = supportSec?.fields;
   const areas = section("areas_strip")?.fields;
   const approach = section("approach_steps")?.fields;
-  const difference = section("difference_block")?.fields;
+  const differenceSec = section("difference_block");
+  const difference = differenceSec?.fields;
   const circle = section("brand_circle")?.fields;
-  const leadership = section("leadership")?.fields;
-  const reviewsSec = section("home_reviews")?.fields;
+  const leadershipSec = section("leadership");
+  const leadership = leadershipSec?.fields;
+  const reviewsSec = section("home_reviews");
   const homeContact = section("home_contact")?.fields;
   const meta = pageSeoForPack("/", pack?.slug) || {
     title: settings.brandName || "Home",
@@ -71,11 +74,9 @@ export default function Home() {
     label: "Call us today",
     to: settings.phoneHref,
   };
-  const boardServices = servicesBoard?.services?.length
-    ? servicesBoard.services
-    : [];
-  const supportItems = support?.items?.length
-    ? support.items
+  const boardServices = cmsList(servicesBoardSec, "services");
+  const supportItems = supportSec
+    ? cmsList(supportSec, "items")
     : isTotalSupport
       ? []
       : SUPPORT_ITEMS;
@@ -88,14 +89,15 @@ export default function Home() {
         .filter(Boolean);
   const approachSteps = approach?.steps?.length ? approach.steps : [];
   const approachImage = approach?.image || APPROACH_IMG;
-  const differenceParas = difference?.paragraphs?.length
-    ? difference.paragraphs
+  const differenceParas = differenceSec
+    ? cmsList(differenceSec, "paragraphs")
     : isTotalSupport
       ? []
       : DIFFERENCE_COPY;
   const circleOrbs = isTotalSupport && circle?.orbs?.length ? circle.orbs : [];
-  const teamMembers = leadership?.members?.length ? leadership.members : [];
-  const reviewItems = reviewsSec?.items?.length ? reviewsSec.items : REVIEWS;
+  const teamMembers = cmsList(leadershipSec, "members");
+  // CMS off/empty → hide; never resurrect hardcoded REVIEWS seed copy
+  const reviewItems = cmsList(reviewsSec, "items");
   const orbClass = ["a", "b", "c"];
 
   const fadeUp = reduceMotion
@@ -623,25 +625,7 @@ export default function Home() {
               </motion.div>
 
               <div className="team-grid">
-                {(teamMembers.length
-                  ? teamMembers
-                  : isTotalSupport
-                    ? []
-                    : [
-                        {
-                          name: "Kerry Moran",
-                          role: "CEO Manager",
-                          photo: KERRY_PHOTO,
-                          bio: "Founder-led care with a commitment that shows when families need more visits, tougher days, or simply a listening ear.",
-                        },
-                        {
-                          name: "Nicole Pienaar",
-                          role: "Team Manager",
-                          photo: NICOLE_PHOTO,
-                          bio: "Hands-on leadership that keeps quality consistent, matching carers thoughtfully and holding the standard of every visit.",
-                        },
-                      ]
-                ).map((member, i) => (
+                {teamMembers.map((member, i) => (
                   <motion.article
                     key={member.name}
                     className="team-member"
@@ -652,13 +636,15 @@ export default function Home() {
                     }}
                   >
                     <div className="team-photo">
-                      <img
-                        src={member.photo || KERRY_PHOTO}
-                        alt={member.name}
-                        width={300}
-                        height={300}
-                        loading="lazy"
-                      />
+                      {member.photo ? (
+                        <img
+                          src={member.photo}
+                          alt={member.name}
+                          width={300}
+                          height={300}
+                          loading="lazy"
+                        />
+                      ) : null}
                     </div>
                     <div>
                       <h3>{member.name}</h3>
@@ -684,9 +670,9 @@ export default function Home() {
         <section id="reviews" className="section section-paper">
           <div className="section-inner reviews-section">
             <motion.div className="reviews-section__intro" {...fadeUp}>
-              <p className="section-kicker">{reviewsSec?.kicker || ""}</p>
-              <h2 className="section-title">{reviewsSec?.title || ""}</h2>
-              <p className="section-lead">{reviewsSec?.lede || ""}</p>
+              <p className="section-kicker">{reviewsSec?.fields?.kicker || ""}</p>
+              <h2 className="section-title">{reviewsSec?.fields?.title || ""}</h2>
+              <p className="section-lead">{reviewsSec?.fields?.lede || ""}</p>
             </motion.div>
 
             <motion.div {...fadeUp}>

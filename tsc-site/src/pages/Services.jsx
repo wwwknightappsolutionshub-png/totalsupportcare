@@ -4,14 +4,12 @@ import ServicesPanel from "../components/ServicesPanel";
 import TscServiceCards from "../components/TscServiceCards";
 import {
   AREAS_COPY,
-  SERVICES,
   SERVICES_HERO,
-  SUPPORT_ITEMS,
   SUPPORT_SCENE,
-  WHY_CHOOSE,
 } from "../data/site";
 import { pageHeroFallback } from "../data/packFallbacks";
 import { useCmsPage, useSite } from "../context/SiteContext";
+import { cmsList } from "../lib/cmsFields";
 import Seo from "../seo/Seo";
 import { pageSeoForPack } from "../seo/pageMeta";
 import {
@@ -84,10 +82,13 @@ export default function Services() {
   const { settings, isTotalSupport, pack } = useSite();
   const { section } = useCmsPage("/services");
   const hero = section("page_hero")?.fields;
-  const board = section("services_board")?.fields;
-  const support = section("support_list")?.fields;
+  const boardSec = section("services_board");
+  const board = boardSec?.fields;
+  const supportSec = section("support_list");
+  const support = supportSec?.fields;
   const areas = section("areas_strip")?.fields;
-  const why = section("why_cards")?.fields;
+  const whySec = section("why_cards");
+  const why = whySec?.fields;
   const pageCta = section("page_cta_band")?.fields;
   const brand = hero?.brand || settings.brandName || "Total Support Care";
   const heroFb = pageHeroFallback(pack?.slug, "services");
@@ -107,10 +108,10 @@ export default function Services() {
         viewport: { once: true, margin: "-60px" },
         transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
       };
-  const services = board?.services?.length ? board.services : SERVICES;
-  const supportItems = support?.items?.length ? support.items : SUPPORT_ITEMS;
+  const services = cmsList(boardSec, "services");
+  const supportItems = cmsList(supportSec, "items");
   const supportImage = support?.image || SUPPORT_SCENE;
-  const whyItems = why?.items?.length ? why.items : WHY_CHOOSE;
+  const whyItems = cmsList(whySec, "items");
   const areasPlaces = areas?.places
     || (isTotalSupport
       ? "Edinburgh · Loanhead · Midlothian"

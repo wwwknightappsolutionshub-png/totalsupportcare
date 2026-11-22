@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { SERVICES } from "../data/site";
 
-export default function ServicesPanel({ services = SERVICES }) {
-  const list = services?.length ? services : SERVICES;
+export default function ServicesPanel({ services = [] }) {
+  const list = Array.isArray(services) ? services : [];
   const [active, setActive] = useState(0);
   const safe = Math.min(active, Math.max(list.length - 1, 0));
   const current = list[safe];

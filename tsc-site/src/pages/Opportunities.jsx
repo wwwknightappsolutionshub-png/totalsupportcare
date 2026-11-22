@@ -3,13 +3,13 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   HIRING_INTERVIEW,
-  OPPORTUNITIES,
   OPPORTUNITIES_HERO,
 } from "../data/site";
 import { pageHeroFallback } from "../data/packFallbacks";
 import { api } from "../lib/api";
 import { useToast } from "../components/Toast";
 import { useCmsPage, useSite } from "../context/SiteContext";
+import { cmsList } from "../lib/cmsFields";
 import { applyFormSchema } from "../lib/validation/schemas";
 import { firstErrorMessage } from "../lib/validation/sanitize";
 import Seo from "../seo/Seo";
@@ -332,28 +332,21 @@ export default function Opportunities() {
   const { settings, isTotalSupport, pack } = useSite();
   const { section } = useCmsPage("/opportunities");
   const hero = section("page_hero")?.fields;
-  const letter = section("hiring_letter")?.fields;
-  const must = section("hiring_must")?.fields;
-  const benefits = section("hiring_benefits")?.fields;
-  const role = section("hiring_role")?.fields;
-  const provided = section("hiring_provided")?.fields;
+  const letterSec = section("hiring_letter");
+  const letter = letterSec?.fields;
+  const mustSec = section("hiring_must");
+  const benefitsSec = section("hiring_benefits");
+  const roleSec = section("hiring_role");
+  const providedSec = section("hiring_provided");
   const dockCta = section("page_cta_band")?.fields;
   const brand = hero?.brand || settings.brandName || "Total Support Care";
   const heroFb = pageHeroFallback(pack?.slug, "opportunities");
 
-  const intro = letter?.paragraphs?.length
-    ? letter.paragraphs
-    : OPPORTUNITIES.intro;
-  const mustHaves = must?.items?.length ? must.items : OPPORTUNITIES.mustHaves;
-  const benefitItems = benefits?.items?.length
-    ? benefits.items
-    : OPPORTUNITIES.benefits;
-  const roleCopy = role?.paragraphs?.length
-    ? role.paragraphs
-    : OPPORTUNITIES.role;
-  const providedCopy = provided?.items?.length
-    ? provided.items
-    : OPPORTUNITIES.provided;
+  const intro = cmsList(letterSec, "paragraphs");
+  const mustHaves = cmsList(mustSec, "items");
+  const benefitItems = cmsList(benefitsSec, "items");
+  const roleCopy = cmsList(roleSec, "paragraphs");
+  const providedCopy = cmsList(providedSec, "items");
   const hrEmail = settings.hrEmail;
   const meta = pageSeoForPack("/opportunities", pack?.slug) || {
     title: `Opportunities | ${brand}`,

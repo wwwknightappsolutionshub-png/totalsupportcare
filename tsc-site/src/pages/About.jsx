@@ -1,13 +1,9 @@
 import { Link } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
-import {
-  ABOUT,
-  ABOUT_HERO,
-  KERRY_PHOTO,
-  NICOLE_PHOTO,
-} from "../data/site";
+import { ABOUT_HERO } from "../data/site";
 import { pageHeroFallback } from "../data/packFallbacks";
 import { useCmsPage, useSite } from "../context/SiteContext";
+import { cmsList } from "../lib/cmsFields";
 import Seo from "../seo/Seo";
 import { pageSeoForPack } from "../seo/pageMeta";
 import {
@@ -18,14 +14,18 @@ import {
 
 export default function About() {
   const reduceMotion = useReducedMotion();
-  const { settings, isTotalSupport, pack } = useSite();
+  const { settings, pack } = useSite();
   const { section } = useCmsPage("/about");
   const hero = section("page_hero")?.fields;
-  const mission = section("about_mission")?.fields;
-  const pull = section("pull_quote")?.fields;
-  const together = section("principles_ledger")?.fields;
-  const promise = section("promise")?.fields;
-  const team = section("leadership")?.fields;
+  const missionSec = section("about_mission");
+  const mission = missionSec?.fields;
+  const pullSec = section("pull_quote");
+  const pull = pullSec?.fields;
+  const togetherSec = section("principles_ledger");
+  const together = togetherSec?.fields;
+  const promiseSec = section("promise");
+  const promise = promiseSec?.fields;
+  const teamSec = section("leadership");
   const pageCta = section("page_cta_band")?.fields;
 
   const brand = hero?.brand || settings.brandName || "Total Support Care";
@@ -33,38 +33,14 @@ export default function About() {
   const title = hero?.title || heroFb.title;
   const lede = hero?.lede || heroFb.lede;
   const heroImage = hero?.image || ABOUT_HERO;
-  const missionTitle = mission?.title || ABOUT.missionTitle;
-  const missionParas = mission?.paragraphs || ABOUT.mission;
-  const pullQuote = pull?.quote || ABOUT.pullQuote;
-  const togetherKicker = together?.kicker || "Continuity";
-  const togetherItems = together?.items || ABOUT.together;
-  const promiseBody = promise?.body || ABOUT.promise;
-  const members =
-    team?.members?.length > 0
-      ? team.members
-      : isTotalSupport
-        ? [
-            {
-              name: "Registered Manager",
-              role: "Total Support Care",
-              photo: heroImage,
-              bio: "Founder-led care with the person at the centre of every plan.",
-            },
-          ]
-        : [
-            {
-              name: "Kerry Moran",
-              role: "CEO Manager",
-              photo: KERRY_PHOTO,
-              bio: "Founder-led care with a commitment that shows when families need more visits, tougher days, or simply a listening ear.",
-            },
-            {
-              name: "Nicole Pienaar",
-              role: "Team Manager",
-              photo: NICOLE_PHOTO,
-              bio: "Hands-on leadership that keeps quality consistent, matching carers thoughtfully and holding the standard of every visit.",
-            },
-          ];
+  const missionTitle = mission?.title || "";
+  const missionParas = cmsList(missionSec, "paragraphs");
+  const pullQuote = pullSec ? pull?.quote || "" : "";
+  const togetherKicker = together?.kicker || "";
+  const togetherItems = cmsList(togetherSec, "items");
+  const promiseBody = promiseSec ? promise?.body || "" : "";
+  // No hardcoded team when CMS leadership is off/empty
+  const members = cmsList(teamSec, "members");
   const phoneHref = settings.phoneHref;
 
   const fade = reduceMotion
@@ -157,7 +133,7 @@ export default function About() {
         </motion.blockquote>
       </aside>
 
-      {isTotalSupport ? (
+      {togetherSec ? (
         <section
           className="tsc-orbit"
           aria-labelledby="tsc-orbit-heading"
@@ -237,54 +213,26 @@ export default function About() {
             </ol>
           </div>
         </section>
-      ) : (
-        <section className="manifesto-together">
-          <div className="manifesto-together__intro">
-            <motion.p className="section-kicker" {...fade}>
-              {togetherKicker}
-            </motion.p>
-            <motion.h2 {...fade}>
-              {together?.titleLine1 || "Together, We Can Provide"}
-              <br />
-              {together?.titleLine2 || "Exceptional Care"}
-            </motion.h2>
-          </div>
-          <ol className="manifesto-together__ledger">
-            {togetherItems.map((item, i) => (
-              <motion.li
-                key={item.title}
-                className="manifesto-together__row"
-                {...fade}
-              >
-                <div className="manifesto-together__meta">
-                  <span className="manifesto-together__idx" aria-hidden="true">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="manifesto-together__ref">Principle</span>
-                </div>
-                <div className="manifesto-together__content">
-                  <h3>{item.title}</h3>
-                  <p>{item.body}</p>
-                </div>
-              </motion.li>
-            ))}
-          </ol>
+      ) : null}
+
+      {promiseSec && promiseBody ? (
+        <section className="manifesto-promise">
+          <motion.div className="manifesto-promise__mark" {...fade}>
+            <span>Our</span>
+            <strong>promise</strong>
+          </motion.div>
+          <motion.p {...fade}>{promiseBody}</motion.p>
         </section>
-      )}
+      ) : null}
 
-      <section className="manifesto-promise">
-        <motion.div className="manifesto-promise__mark" {...fade}>
-          <span>Our</span>
-          <strong>promise</strong>
-        </motion.div>
-        <motion.p {...fade}>{promiseBody}</motion.p>
-      </section>
-
+      {teamSec && members.length ? (
       <section className="manifesto-faces">
         <div className="manifesto-faces__inner">
           <motion.div className="manifesto-faces__intro" {...fade}>
-            <p className="section-kicker">{team?.kicker || "Who leads the work"}</p>
-            <h2>{team?.title || "Familiar leadership"}</h2>
+            <p className="section-kicker">
+              {teamSec.fields?.kicker || "Who leads the work"}
+            </p>
+            <h2>{teamSec.fields?.title || "Familiar leadership"}</h2>
           </motion.div>
           <div className="manifesto-faces__grid">
             {members.map((member, i) => (
@@ -297,12 +245,14 @@ export default function About() {
                   delay: reduceMotion ? 0 : i * 0.12,
                 }}
               >
-                <img
-                  src={member.photo}
-                  alt={member.name}
-                  width={300}
-                  height={300}
-                />
+                {member.photo ? (
+                  <img
+                    src={member.photo}
+                    alt={member.name}
+                    width={300}
+                    height={300}
+                  />
+                ) : null}
                 <div className="manifesto-face__copy">
                   <p className="manifesto-face__role">{member.role}</p>
                   <h3>{member.name}</h3>
@@ -313,6 +263,7 @@ export default function About() {
           </div>
         </div>
       </section>
+      ) : null}
 
       {pageCta?.body || pageCta?.primaryCta ? (
         <section className="page-cta-band">
