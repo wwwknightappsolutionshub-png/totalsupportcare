@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import Layout from "./components/Layout";
@@ -10,21 +11,29 @@ import News from "./pages/News";
 import Opportunities from "./pages/Opportunities";
 import Services from "./pages/Services";
 import DynamicCmsPage from "./pages/DynamicCmsPage";
-import AdminLayout, { OwnerOnly } from "./admin/AdminLayout";
-import AdminLogin from "./admin/AdminLogin";
-import AdminHome from "./admin/AdminHome";
-import AdminPages from "./admin/AdminPages";
-import AdminApplications from "./admin/AdminApplications";
-import AdminMessages from "./admin/AdminMessages";
-import AdminWhatsApp from "./admin/AdminWhatsApp";
-import AdminMedia from "./admin/AdminMedia";
-import AdminSettings from "./admin/AdminSettings";
-import HrHome from "./hr/HrHome";
-import HrStaff from "./hr/HrStaff";
-import HrTraining from "./hr/HrTraining";
-import HrAbsences from "./hr/HrAbsences";
-import HrTasks from "./hr/HrTasks";
-import HrReports from "./hr/HrReports";
+import { OwnerOnly } from "./admin/OwnerOnly";
+
+const AdminLogin = lazy(() => import("./admin/AdminLogin"));
+const AdminLayout = lazy(() => import("./admin/AdminLayout"));
+const AdminHome = lazy(() => import("./admin/AdminHome"));
+const AdminPages = lazy(() => import("./admin/AdminPages"));
+const AdminApplications = lazy(() => import("./admin/AdminApplications"));
+const AdminMessages = lazy(() => import("./admin/AdminMessages"));
+const AdminWhatsApp = lazy(() => import("./admin/AdminWhatsApp"));
+const AdminMedia = lazy(() => import("./admin/AdminMedia"));
+const AdminSettings = lazy(() => import("./admin/AdminSettings"));
+const HrHome = lazy(() => import("./hr/HrHome"));
+const HrStaff = lazy(() => import("./hr/HrStaff"));
+const HrTraining = lazy(() => import("./hr/HrTraining"));
+const HrAbsences = lazy(() => import("./hr/HrAbsences"));
+const HrTasks = lazy(() => import("./hr/HrTasks"));
+const HrReports = lazy(() => import("./hr/HrReports"));
+
+function AdminRouteFallback() {
+  return (
+    <div style={{ padding: "2rem", fontFamily: "system-ui" }}>Loading…</div>
+  );
+}
 
 function PublicRoutes() {
   const { ready } = useSite();
@@ -37,14 +46,37 @@ function PublicRoutes() {
 
   return (
     <Routes>
-      <Route path="/admin/login" element={<AdminLogin />} />
-      <Route path="/admin" element={<AdminLayout />}>
-        <Route index element={<AdminHome />} />
+      <Route
+        path="/admin/login"
+        element={
+          <Suspense fallback={<AdminRouteFallback />}>
+            <AdminLogin />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/admin"
+        element={
+          <Suspense fallback={<AdminRouteFallback />}>
+            <AdminLayout />
+          </Suspense>
+        }
+      >
+        <Route
+          index
+          element={
+            <Suspense fallback={<AdminRouteFallback />}>
+              <AdminHome />
+            </Suspense>
+          }
+        />
         <Route
           path="pages"
           element={
             <OwnerOnly>
-              <AdminPages />
+              <Suspense fallback={<AdminRouteFallback />}>
+                <AdminPages />
+              </Suspense>
             </OwnerOnly>
           }
         />
@@ -52,7 +84,9 @@ function PublicRoutes() {
           path="settings"
           element={
             <OwnerOnly>
-              <AdminSettings />
+              <Suspense fallback={<AdminRouteFallback />}>
+                <AdminSettings />
+              </Suspense>
             </OwnerOnly>
           }
         />
@@ -60,7 +94,9 @@ function PublicRoutes() {
           path="media"
           element={
             <OwnerOnly>
-              <AdminMedia />
+              <Suspense fallback={<AdminRouteFallback />}>
+                <AdminMedia />
+              </Suspense>
             </OwnerOnly>
           }
         />
@@ -68,18 +104,76 @@ function PublicRoutes() {
           path="whatsapp"
           element={
             <OwnerOnly>
-              <AdminWhatsApp />
+              <Suspense fallback={<AdminRouteFallback />}>
+                <AdminWhatsApp />
+              </Suspense>
             </OwnerOnly>
           }
         />
-        <Route path="applications" element={<AdminApplications />} />
-        <Route path="messages" element={<AdminMessages />} />
-        <Route path="hr" element={<HrHome />} />
-        <Route path="hr/staff" element={<HrStaff />} />
-        <Route path="hr/training" element={<HrTraining />} />
-        <Route path="hr/absences" element={<HrAbsences />} />
-        <Route path="hr/tasks" element={<HrTasks />} />
-        <Route path="hr/reports" element={<HrReports />} />
+        <Route
+          path="applications"
+          element={
+            <Suspense fallback={<AdminRouteFallback />}>
+              <AdminApplications />
+            </Suspense>
+          }
+        />
+        <Route
+          path="messages"
+          element={
+            <Suspense fallback={<AdminRouteFallback />}>
+              <AdminMessages />
+            </Suspense>
+          }
+        />
+        <Route
+          path="hr"
+          element={
+            <Suspense fallback={<AdminRouteFallback />}>
+              <HrHome />
+            </Suspense>
+          }
+        />
+        <Route
+          path="hr/staff"
+          element={
+            <Suspense fallback={<AdminRouteFallback />}>
+              <HrStaff />
+            </Suspense>
+          }
+        />
+        <Route
+          path="hr/training"
+          element={
+            <Suspense fallback={<AdminRouteFallback />}>
+              <HrTraining />
+            </Suspense>
+          }
+        />
+        <Route
+          path="hr/absences"
+          element={
+            <Suspense fallback={<AdminRouteFallback />}>
+              <HrAbsences />
+            </Suspense>
+          }
+        />
+        <Route
+          path="hr/tasks"
+          element={
+            <Suspense fallback={<AdminRouteFallback />}>
+              <HrTasks />
+            </Suspense>
+          }
+        />
+        <Route
+          path="hr/reports"
+          element={
+            <Suspense fallback={<AdminRouteFallback />}>
+              <HrReports />
+            </Suspense>
+          }
+        />
       </Route>
 
       <Route element={<Layout />}>

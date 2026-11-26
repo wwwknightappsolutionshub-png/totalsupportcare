@@ -1,6 +1,6 @@
 /** Canonical site origin for absolute SEO URLs. */
 export const SITE_URL = (
-  import.meta.env.VITE_SITE_URL || "https://www.totalsupportcare.co.uk"
+  import.meta.env.VITE_SITE_URL || "https://totalsupportcare.co.uk"
 ).replace(/\/$/, "");
 
 export function absoluteUrl(path = "/") {

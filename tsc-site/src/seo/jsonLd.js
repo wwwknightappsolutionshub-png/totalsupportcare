@@ -1,4 +1,4 @@
-import { SITE_URL, absoluteUrl } from "./siteUrl";
+import { SITE_URL, absoluteUrl, absoluteAsset } from "./siteUrl";
 
 const DEFAULT_PHONE = "07522 347972";
 const DEFAULT_EMAIL = "info@totalsupportcare.co.uk";
@@ -24,8 +24,8 @@ export function organizationJsonLd(settings = {}) {
     "@id": `${SITE_URL}/#organization`,
     name,
     url: SITE_URL,
-    logo,
-    image: logo,
+    logo: absoluteUrl(logo),
+    image: absoluteAsset("/og-default.jpg"),
     email,
     telephone: phone,
     address: {

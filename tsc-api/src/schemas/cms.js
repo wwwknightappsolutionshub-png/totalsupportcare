@@ -1,6 +1,10 @@
 import { z } from "zod";
 import { sanitizeMultiline, sanitizeText } from "../lib/sanitize.js";
-import { isSafeHref, isSafeImageUrl } from "../lib/sanitize.js";
+import {
+  isSafeHref,
+  isSafeImageUrl,
+  isSafeInternalPath,
+} from "../lib/sanitize.js";
 
 const MAX_SECTIONS = 80;
 const MAX_SECTION_JSON = 512 * 1024;
@@ -38,7 +42,7 @@ function scrubValue(value, depth = 0) {
   if (value == null) return value;
   if (typeof value === "string") {
     let s = sanitizeMultiline(value, { max: 20000 });
-    if (isSafeHref(s) || isSafeImageUrl(s) || s.startsWith("/")) {
+    if (isSafeHref(s) || isSafeImageUrl(s) || isSafeInternalPath(s)) {
       return s;
     }
     if (/^(javascript|data|vbscript|file):/i.test(s)) return "";

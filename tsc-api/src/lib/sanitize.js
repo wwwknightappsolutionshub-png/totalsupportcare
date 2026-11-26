@@ -21,16 +21,34 @@ export function sanitizeMultiline(value, { max } = {}) {
 }
 
 const SAFE_HREF =
-  /^(?:\/[a-zA-Z0-9/_\-.?#&=%]*|https:\/\/[^\s<>"']+|mailto:[^\s<>"']+|tel:[+\d()\-\s.]+)$/i;
+  /^(?:\/[a-zA-Z0-9/_\-.?#&=%]+|https:\/\/[^\s<>"']+|mailto:[^\s<>"']+|tel:[+\d()\-\s.]+)$/i;
 
 const SAFE_IMAGE =
   /^(?:\/[a-zA-Z0-9/_\-.%]+|https:\/\/[^\s<>"']+)$/i;
+
+const RESERVED_PATH_PREFIX =
+  /^\/(?:admin|api|uploads|private|data)(?:\/|$)/i;
+
+/** Single-slash internal app paths (no protocol-relative //evil.com). */
+export function isSafeInternalPath(value) {
+  const s = String(value ?? "").trim();
+  if (!s || s.length > 500) return false;
+  if (!s.startsWith("/") || s.startsWith("//")) return false;
+  if (/\s/.test(s) || /[\u0000-\u001f]/.test(s)) return false;
+  if (!/^\/[a-zA-Z0-9/_\-.?#&=%]*$/.test(s)) return false;
+  if (RESERVED_PATH_PREFIX.test(s)) return false;
+  return true;
+}
 
 /** Allow internal paths, https, mailto, tel — reject javascript:/data:/etc. */
 export function isSafeHref(value) {
   const s = String(value ?? "").trim();
   if (!s || s.length > 2000) return false;
   if (/^(javascript|data|vbscript|file):/i.test(s)) return false;
+  if (s.startsWith("//")) return false;
+  if (s.startsWith("/") && !s.startsWith("//")) {
+    return isSafeInternalPath(s);
+  }
   return SAFE_HREF.test(s);
 }
 
@@ -39,6 +57,8 @@ export function isSafeImageUrl(value) {
   const s = String(value ?? "").trim();
   if (!s || s.length > 2000) return false;
   if (/^(javascript|data|vbscript|file):/i.test(s)) return false;
+  if (s.startsWith("//")) return false;
+  if (s.startsWith("/")) return isSafeInternalPath(s);
   return SAFE_IMAGE.test(s);
 }
 

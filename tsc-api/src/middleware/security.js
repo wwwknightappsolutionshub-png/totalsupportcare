@@ -1,7 +1,7 @@
 import { config } from "../config.js";
 
 const BLOCKED_PATH =
-  /(?:^|\/)(?:\.env(?:\..*)?|secrets(?:\/|$)|private(?:\/|$)|data\/[^/]*\.db|\.git(?:\/|$)|\.svn(?:\/|$)|\.hg(?:\/|$)|\.DS_Store|thumbs\.db|web\.config|\.htaccess|\.htpasswd|docker-compose(?:\..*)?\.ya?ml|Dockerfile(?:\..*)?|composer\.(?:json|lock)|package(?:-lock)?\.json|yarn\.lock|pnpm-lock\.yaml|id_rsa|\.pem$|\.key$|\.p12$|\.pfx$|\.crt$|\.cer$)/i;
+  /(?:^|\/)(?:\.env(?:\..*)?|secrets(?:\/|$)|private(?:\/|$)|data(?:\/|$)|uploads\/[^/]*\.(?:db|sqlite)|\.git(?:\/|$)|\.svn(?:\/|$)|\.hg(?:\/|$)|\.DS_Store|thumbs\.db|web\.config|\.htaccess|\.htpasswd|docker-compose(?:\..*)?\.ya?ml|Dockerfile(?:\..*)?|composer\.(?:json|lock)|package(?:-lock)?\.json|yarn\.lock|pnpm-lock\.yaml|id_rsa|\.pem$|\.key$|\.p12$|\.pfx$|\.crt$|\.cer$)/i;
 
 /**
  * Strip fingerprinting headers and apply hardened defaults for every response.

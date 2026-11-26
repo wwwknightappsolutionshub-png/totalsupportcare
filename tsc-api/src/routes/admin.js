@@ -18,6 +18,7 @@ import {
 } from "../schemas/primitives.js";
 import { notifyApplicationStatus } from "../services/notify.js";
 import { sendWhatsAppText } from "../services/whatsapp.js";
+import { isSafePublicPath } from "../lib/publicPath.js";
 import {
   activatePack,
   getActivePack,
@@ -271,6 +272,9 @@ const createPageSchema = z.object({
 router.post("/pages", requireRole("owner"), validate(createPageSchema), (req, res) => {
   const pack = getActivePack();
   if (!pack) return res.status(404).json({ error: "not_found" });
+  if (!isSafePublicPath(req.body.path)) {
+    return res.status(400).json({ error: "invalid_path" });
+  }
   const exists = db
     .prepare("SELECT id FROM pack_pages WHERE pack_slug = ? AND path = ?")
     .get(pack.slug, req.body.path);

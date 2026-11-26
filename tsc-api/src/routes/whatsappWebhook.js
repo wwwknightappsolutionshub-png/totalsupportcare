@@ -17,7 +17,11 @@ router.get("/", (req, res) => {
     config.whatsapp.verifyToken &&
     token === config.whatsapp.verifyToken
   ) {
-    return res.status(200).send(String(challenge || ""));
+    const safe = String(challenge ?? "");
+    if (!/^[A-Za-z0-9_-]{1,256}$/.test(safe)) {
+      return res.sendStatus(403);
+    }
+    return res.status(200).send(safe);
   }
   return res.sendStatus(403);
 });

@@ -18,6 +18,7 @@ import {
 } from "../data/site";
 import { useCmsPage, useSite } from "../context/SiteContext";
 import { cmsList } from "../lib/cmsFields";
+import { safeHref } from "../lib/safeHref";
 import Seo from "../seo/Seo";
 import { pageSeoForPack } from "../seo/pageMeta";
 import {
@@ -253,21 +254,33 @@ export default function Home() {
           >
             {primaryCta?.to?.startsWith("tel:") ||
             primaryCta?.to?.startsWith("mailto:") ? (
-              <a className="btn btn-primary hero-btn" href={primaryCta.to}>
+              <a
+                className="btn btn-primary hero-btn"
+                href={safeHref(primaryCta.to, "/contact")}
+              >
                 {primaryCta.label}
               </a>
             ) : (
-              <Link className="btn btn-primary hero-btn" to={primaryCta.to || "/contact"}>
+              <Link
+                className="btn btn-primary hero-btn"
+                to={safeHref(primaryCta?.to, "/contact")}
+              >
                 {primaryCta.label}
               </Link>
             )}
             {secondaryCta?.to?.startsWith("tel:") ||
             secondaryCta?.to?.startsWith("mailto:") ? (
-              <a className="btn btn-ghost hero-btn" href={secondaryCta.to}>
+              <a
+                className="btn btn-ghost hero-btn"
+                href={safeHref(secondaryCta.to, settings.phoneHref)}
+              >
                 {secondaryCta.label}
               </a>
             ) : (
-              <Link className="btn btn-ghost hero-btn" to={secondaryCta.to || settings.phoneHref}>
+              <Link
+                className="btn btn-ghost hero-btn"
+                to={safeHref(secondaryCta?.to, settings.phoneHref)}
+              >
                 {secondaryCta.label}
               </Link>
             )}
@@ -399,7 +412,7 @@ export default function Home() {
               </p>
               <a
                 className="trust-cqc__link"
-                href={settings.cqcUrl}
+                href={safeHref(settings.cqcUrl, "#")}
                 target="_blank"
                 rel="noreferrer"
               >
@@ -701,7 +714,11 @@ export default function Home() {
                   {homeContact?.cqcNote || (
                     <>
                       CQC registered provider, see registration details on the{" "}
-                      <a href={settings.cqcUrl} target="_blank" rel="noreferrer">
+                      <a
+                        href={safeHref(settings.cqcUrl, "#")}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
                         Care Quality Commission
                       </a>{" "}
                       website.

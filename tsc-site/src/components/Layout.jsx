@@ -96,7 +96,11 @@ export default function Layout() {
   const email = settings.email;
   const brand = settings.brandName || pack?.name || "Total Support Care";
   const tagline = settings.tagline || "Care as individual as you.";
-  const siteUrl = "https://www.totalsupportcare.co.uk";
+  const siteUrl =
+    (import.meta.env.VITE_SITE_URL || "https://totalsupportcare.co.uk").replace(
+      /\/$/,
+      ""
+    );
   const regionLine = "Scotland, United Kingdom";
 
   useEffect(() => {

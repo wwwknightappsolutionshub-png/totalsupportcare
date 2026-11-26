@@ -1,0 +1,14 @@
+# Total Support Care
+
+> All-inclusive, personalised domiciliary care across Edinburgh and Loanhead, Scotland.
+
+- Home: https://totalsupportcare.co.uk/
+- About: https://totalsupportcare.co.uk/about
+- Services: https://totalsupportcare.co.uk/services
+- News: https://totalsupportcare.co.uk/news
+- Careers: https://totalsupportcare.co.uk/opportunities
+- Contact: https://totalsupportcare.co.uk/contact
+- Sitemap: https://totalsupportcare.co.uk/api/public/sitemap.xml
+
+Contact: info@totalsupportcare.co.uk | 07522 347972
+Address: 6 Dryden Rd, Loanhead, EH20 9LZ, UK

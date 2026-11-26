@@ -3,6 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import { config } from "./config.js";
+import { requireTrustedOrigin } from "./middleware/origin.js";
 import {
   blockSensitivePaths,
   hardenResponseHeaders,
@@ -80,10 +81,10 @@ app.use(
   })
 );
 
-app.use("/api/auth", authRoutes);
-app.use("/api/public", publicRoutes);
-app.use("/api/admin", adminRoutes);
-app.use("/api/hr", hrRoutes);
+app.use("/api/auth", requireTrustedOrigin, authRoutes);
+app.use("/api/public", requireTrustedOrigin, publicRoutes);
+app.use("/api/admin", requireTrustedOrigin, adminRoutes);
+app.use("/api/hr", requireTrustedOrigin, hrRoutes);
 app.use("/api/webhooks/whatsapp", whatsappWebhook);
 
 app.use((err, _req, res, _next) => {

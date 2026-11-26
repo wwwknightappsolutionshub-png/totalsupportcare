@@ -18,6 +18,11 @@ import {
 } from "../services/notify.js";
 import { verifyTurnstileToken } from "../services/turnstile.js";
 import {
+  escapeXmlText,
+  isSafePublicPath,
+  normalizePublicPath,
+} from "../lib/publicPath.js";
+import {
   getActivePack,
   getPackPage,
   listPackPages,
@@ -133,29 +138,58 @@ router.get("/pages", (_req, res) => {
   });
 });
 
+const TSC_STATIC_PATHS = [
+  "/",
+  "/about",
+  "/services",
+  "/news",
+  "/opportunities",
+  "/contact",
+];
+
 /** XML sitemap of active pack published pages. */
 router.get("/sitemap.xml", (_req, res) => {
-  const origin = (
-    config.appOrigins[0] || "https://www.totalsupportcare.co.uk"
-  ).replace(/\/$/, "");
+  const configured = (process.env.PUBLIC_SITE_URL || "").replace(/\/$/, "");
+  const prodOrigin = config.appOrigins
+    .map((o) => o.replace(/\/$/, ""))
+    .find(
+      (o) =>
+        o.startsWith("https://") &&
+        !o.includes("localhost") &&
+        !o.includes("127.0.0.1") &&
+        !o.includes(":5173")
+    );
   const site =
-    (process.env.PUBLIC_SITE_URL || "").replace(/\/$/, "") ||
-    (origin.includes("5173") || origin.includes("localhost")
-      ? "https://www.totalsupportcare.co.uk"
-      : origin);
+    configured || prodOrigin || "https://totalsupportcare.co.uk";
 
   const pack = getActivePack();
   const rows = pack
     ? listPackPages(pack.slug, { publishedOnly: true })
     : [];
 
-  const urls = rows
+  const byPath = new Map();
+  for (const row of rows) {
+    const key = row.path === "" ? "/" : row.path;
+    if (!isSafePublicPath(key)) continue;
+    byPath.set(key, { ...row, path: key });
+  }
+  for (const path of TSC_STATIC_PATHS) {
+    if (!byPath.has(path)) {
+      byPath.set(path, { path, updated_at: null, published_at: null });
+    }
+  }
+  const merged = [...byPath.values()].sort((a, b) =>
+  a.path.localeCompare(b.path)
+  );
+
+  const urls = merged
+    .filter((row) => isSafePublicPath(row.path))
     .map((row) => {
       const loc = row.path === "/" ? `${site}/` : `${site}${row.path}`;
       const lastmod = (row.updated_at || row.published_at || "").slice(0, 10);
       return `  <url>
-    <loc>${loc}</loc>
-    ${lastmod ? `<lastmod>${lastmod}</lastmod>` : ""}
+    <loc>${escapeXmlText(loc)}</loc>
+    ${lastmod ? `<lastmod>${escapeXmlText(lastmod)}</lastmod>` : ""}
     <changefreq>weekly</changefreq>
   </url>`;
     })
@@ -171,10 +205,9 @@ ${urls}
 });
 
 router.get("/page", (req, res) => {
-  let pagePath = String(req.query.path || "/");
-  if (!pagePath.startsWith("/")) pagePath = `/${pagePath}`;
-  if (pagePath.length > 1 && pagePath.endsWith("/")) {
-    pagePath = pagePath.slice(0, -1);
+  const pagePath = normalizePublicPath(req.query.path || "/");
+  if (!pagePath || !isSafePublicPath(pagePath)) {
+    return res.status(400).json({ error: "invalid_path" });
   }
 
   const pack = getActivePack();

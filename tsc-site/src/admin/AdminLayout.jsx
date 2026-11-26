@@ -253,10 +253,4 @@ export default function AdminLayout() {
   );
 }
 
-export function OwnerOnly({ children }) {
-  const { user } = useOutletContext();
-  if (!user || user.role !== "owner") {
-    return <Navigate to="/admin" replace />;
-  }
-  return children;
-}
+export { OwnerOnly } from "./OwnerOnly.jsx";
