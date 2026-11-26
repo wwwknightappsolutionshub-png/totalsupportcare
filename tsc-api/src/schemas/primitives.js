@@ -72,6 +72,17 @@ export const safeImageUrlField = z
     message: "unsafe_image_url",
   });
 
+/** Google Tag Manager container id, or empty to disable. */
+export const gtmContainerIdField = z
+  .string()
+  .max(32)
+  .optional()
+  .or(z.literal(""))
+  .transform((v) => String(v ?? "").trim().toUpperCase())
+  .refine((v) => v === "" || /^GTM-[A-Z0-9]+$/.test(v), {
+    message: "invalid_gtm_id",
+  });
+
 export const interestField = z
   .string()
   .transform((v) => sanitizeText(v ?? "", { max: 40 }).toLowerCase())

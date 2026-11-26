@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { useReducedMotion } from "framer-motion";
 import { useSite } from "../context/SiteContext";
+import GoogleTagManager from "./GoogleTagManager";
 import WhatsAppWidget from "./WhatsAppWidget";
 
 function applyPackTheme(pack) {
@@ -208,6 +209,7 @@ export default function Layout() {
 
   return (
     <div id="top" className={shellClass}>
+      <GoogleTagManager containerId={settings.gtmContainerId} />
       <a className="skip-link" href="#main">
         Skip to content
       </a>

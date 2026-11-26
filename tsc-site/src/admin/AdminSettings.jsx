@@ -17,6 +17,7 @@ const SECTIONS = [
   { id: "contact", label: "Contact" },
   { id: "navigation", label: "Navigation" },
   { id: "social", label: "Social" },
+  { id: "analytics", label: "Analytics" },
   { id: "security", label: "Security" },
 ];
 
@@ -42,6 +43,7 @@ export default function AdminSettings() {
     nav: [],
     footerNav: [],
     social: [],
+    gtmContainerId: "",
   });
 
   useEffect(() => {
@@ -67,6 +69,7 @@ export default function AdminSettings() {
           nav: Array.isArray(s.nav) ? s.nav : [],
           footerNav: Array.isArray(s.footerNav) ? s.footerNav : [],
           social: Array.isArray(s.social) ? s.social : [],
+          gtmContainerId: s.gtmContainerId || "",
         });
       } catch (err) {
         toast.error(err.message || "Could not load settings");
@@ -118,6 +121,7 @@ export default function AdminSettings() {
         nav: form.nav.filter((n) => n.label && n.to),
         footerNav: form.footerNav.filter((n) => n.label && n.to),
         social: form.social.filter((n) => n.label && n.href),
+        gtmContainerId: form.gtmContainerId.trim(),
       });
       if (typeof refreshSettings === "function") await refreshSettings();
       toast.success("Settings saved — live site updated.");
@@ -394,6 +398,42 @@ export default function AdminSettings() {
               />
             </section>
 
+            <section
+              id="settings-analytics"
+              className="admin-settings__card"
+              onFocus={() => setActiveSection("analytics")}
+            >
+              <header className="admin-settings__card-head">
+                <div>
+                  <h2>Analytics</h2>
+                  <p>
+                    Google Tag Manager on the public site only (not admin).
+                    Leave blank to disable tracking.
+                  </p>
+                </div>
+              </header>
+              <div className="admin-settings__fields">
+                <label className="admin-settings__field admin-settings__field--full">
+                  <span>GTM container ID</span>
+                  <input
+                    value={form.gtmContainerId}
+                    onChange={(e) =>
+                      setField("gtmContainerId", e.target.value.toUpperCase())
+                    }
+                    placeholder="GTM-XXXXXXX"
+                    pattern="GTM-[A-Z0-9]*"
+                    autoComplete="off"
+                    spellCheck={false}
+                  />
+                </label>
+                <p className="admin-settings__hint">
+                  Example: <code>GTM-KZFPLM2R</code>. In Tag Manager, add a{" "}
+                  <strong>History Change</strong> trigger or listen for{" "}
+                  <code>virtual_page_view</code> for single-page route changes.
+                </p>
+              </div>
+            </section>
+
             <div className="admin-settings__form-footer">
               <p>Site settings save immediately to the live public site.</p>
               <button type="submit" className="admin-btn" disabled={saving}>
@@ -402,13 +442,13 @@ export default function AdminSettings() {
             </div>
           </form>
 
-          <section
-            id="settings-security"
-            className="admin-settings__card admin-settings__card--security"
-            onFocus={() => setActiveSection("security")}
-          >
-            <PasswordChangeCard />
-          </section>
+            <section
+              id="settings-security"
+              className="admin-settings__card admin-settings__card--security"
+              onFocus={() => setActiveSection("security")}
+            >
+              <PasswordChangeCard />
+            </section>
         </div>
       </div>
     </div>

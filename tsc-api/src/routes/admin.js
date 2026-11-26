@@ -15,6 +15,7 @@ import {
   emailField,
   safeHrefField,
   safeImageUrlField,
+  gtmContainerIdField,
 } from "../schemas/primitives.js";
 import { notifyApplicationStatus } from "../services/notify.js";
 import { sendWhatsAppText } from "../services/whatsapp.js";
@@ -155,6 +156,7 @@ const settingsSchema = z.object({
   addressLine: z.string().max(300).optional(),
   addressShort: z.string().max(200).optional(),
   cqcUrl: safeHrefField.optional(),
+  gtmContainerId: gtmContainerIdField.optional(),
   nav: z.array(navItemSchema).max(20).optional(),
   footerNav: z.array(navItemSchema).max(20).optional(),
   social: z.array(socialItemSchema).max(12).optional(),

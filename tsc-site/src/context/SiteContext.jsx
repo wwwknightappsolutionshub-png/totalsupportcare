@@ -17,6 +17,7 @@ const FALLBACK_SETTINGS = {
   addressLine: "6 Dryden Rd, Loanhead, EH20 9LZ",
   addressShort: "Loanhead, EH20 9LZ · Edinburgh",
   cqcUrl: "",
+  gtmContainerId: "",
   nav: fallback.NAV,
   marketplaceEnabled: false,
   pack: {

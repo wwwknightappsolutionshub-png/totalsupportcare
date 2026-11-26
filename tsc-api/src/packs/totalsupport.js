@@ -56,6 +56,7 @@ export const TOTALSUPPORT_PACK = {
     addressLine: "6 Dryden Rd, Loanhead, EH20 9LZ",
     addressShort: "Loanhead, EH20 9LZ · Edinburgh",
     cqcUrl: "",
+    gtmContainerId: "GTM-KZFPLM2R",
     nav: [
       { label: "About", to: "/about" },
       { label: "Services", to: "/services" },
